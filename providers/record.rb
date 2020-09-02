@@ -25,14 +25,14 @@ action :create do
   type =    new_resource.type
   ttl =     new_resource.ttl
 
-  zone = dnsimple.zones.get( domain )
+  zone = dnsimple.zones.get(domain)
 
   zone.records.all.each do |r|
     Chef::Log.debug "Checking if #{name} exists as #{content} and #{ttl}"
     # do nothing if the record already exists
-    break if(( r.name == name ) and
-             ( r.value == content ) and
-             ( r.ttl == ttl ))
+    break if (r.name == name) &&
+             (r.value == content) &&
+             (r.ttl == ttl)
 
     # delete any record with the name we're trying to create
     if r.name == name
@@ -43,10 +43,10 @@ action :create do
 
   begin
     Chef::Log.debug "Attempting to create record type #{type} for #{name} as #{content}"
-    record = zone.records.create( :name => name,
-                                  :value => content,
-                                  :type => type,
-                                  :ttl => ttl )
+    record = zone.records.create(name: name,
+                                  value: content,
+                                  type: type,
+                                  ttl: ttl)
     new_resource.updated_by_last_action(true)
     Chef::Log.info "DNSimple: created #{type} record for #{name}.#{domain}"
   rescue Excon::Errors::UnprocessableEntity
@@ -55,14 +55,13 @@ action :create do
 end
 
 action :destroy do
-  zone = dnsimple.zones.get( new_resource.domain )
+  zone = dnsimple.zones.get(new_resource.domain)
 
   zone.records.all.each do |r|
-    if ( r.name == new_resource.name ) and ( r.type == new_resource.type )
-      r.destroy
-      new_resource.updated_by_last_action(true)
-      Chef::Log.info "DNSimple: destroyed #{new_resource.type} record " +
-        "for #{new_resource.name}.#{new_resource.domain}"
-    end
+    next unless (r.name == new_resource.name) && (r.type == new_resource.type)
+    r.destroy
+    new_resource.updated_by_last_action(true)
+    Chef::Log.info "DNSimple: destroyed #{new_resource.type} record " +
+                   "for #{new_resource.name}.#{new_resource.domain}"
   end
 end
