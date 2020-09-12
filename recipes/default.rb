@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: dnsimple
+# Cookbook:: dnsimple
 # Recipe:: default
 #
-# Copyright 2010, Heavy Water Software Inc.
+# Copyright:: 2010, Heavy Water Software Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 # limitations under the License.
 #
 
-gem_package "fog" do
+gem_package 'fog' do
   version node['dnsimple']['fog_version']
   action :nothing
-end.run_action( :install )
+end.run_action(:install)
 
 require 'rubygems'
 Gem.clear_paths
